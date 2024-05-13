@@ -8,24 +8,52 @@ function reload() {
     window.location.reload();
 }
 
-async function fetchNews(query) {
-    const res = await fetch(`${url}${query}&apiKey=${API_KEY}`);
-    const data = await res.json();
-    bindData(data.articles);
-}
+// async function fetchNews(query) {
+//     const res = await fetch(`${url}${query}&apiKey=${API_KEY}`);
+//     const data = await res.json();
+//     console.log(data);
+//     bindData(data.articles);
+// }
 
+// function bindData(articles) {
+//     const cardsContainer = document.getElementById("cards-container");
+//     const newsCardTemplate = document.getElementById("template-news-card");
+
+//     cardsContainer.innerHTML = "";
+
+//     articles.forEach((article) => {
+//         if (!article.urlToImage) return;
+//         const cardClone = newsCardTemplate.content.cloneNode(true);
+//         fillDataInCard(cardClone, article);
+//         cardsContainer.appendChild(cardClone);
+//     });
+// }
+async function fetchNews(query) {
+    try {
+        const res = await fetch(`${url}${query}&apiKey=${API_KEY}`);
+        const data = await res.json();
+        bindData(data.articles);
+    } catch (error) {
+        console.error("Error fetching news:", error);
+    }
+}
 function bindData(articles) {
     const cardsContainer = document.getElementById("cards-container");
     const newsCardTemplate = document.getElementById("template-news-card");
 
     cardsContainer.innerHTML = "";
 
-    articles.forEach((article) => {
-        if (!article.urlToImage) return;
-        const cardClone = newsCardTemplate.content.cloneNode(true);
-        fillDataInCard(cardClone, article);
-        cardsContainer.appendChild(cardClone);
-    });
+    // Check if articles is defined and has elements before iterating
+    if (articles && articles.length > 0) {
+        articles.forEach((article) => {
+            if (!article.urlToImage) return;
+            const cardClone = newsCardTemplate.content.cloneNode(true);
+            fillDataInCard(cardClone, article);
+            cardsContainer.appendChild(cardClone);
+        });
+    } else {
+        console.error("No articles to display or articles data is invalid.");
+    }
 }
 
 function fillDataInCard(cardClone, article) {
